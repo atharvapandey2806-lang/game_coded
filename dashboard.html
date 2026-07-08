@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAMEBOT PREMIUM - Enterprise Multiplayer Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ==================== HEADER ==================== */
+        .navbar {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #667eea;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .navbar-menu li a {
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .navbar-menu li a:hover {
+            background: #667eea;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .rank-badge {
+            padding: 0.5rem 1rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .coins-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 215, 0, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        /* ==================== MAIN LAYOUT ==================== */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 3fr 1fr;
+            gap: 2rem;
+        }
+
+        /* ==================== SIDEBAR ==================== */
+        .sidebar {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #667eea;
+            height: fit-content;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .sidebar-item {
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(102, 126, 234, 0.3);
+            transform: translateX(5px);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        /* ==================== MAIN SECTION ==================== */
+        .main-section {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid #667eea;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* ==================== TABS ==================== */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            position: relative;
+            top: 2px;
+        }
+
+        .tab-btn.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+
+        .tab-btn:hover {
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ==================== GAMES GRID ==================== */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .game-card {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid #667eea;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #764ba2;
+        }
+
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .game-name {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-players {
+            font-size: 0.9rem;
+            color: #bbb;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        /* ==================== LEADERBOARD ==================== */
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .leaderboard-table th {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .leaderboard-table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .leaderboard-table tr:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .rank-1 { color: #FFD700; }
+        .rank-2 { color: #C0C0C0; }
+        .rank-3 { color: #CD7F32; }
+
+        .player-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        /* ==================== RIGHT SIDEBAR ==================== */
+        .right-sidebar {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #667eea;
+            height: fit-content;
+        }
+
+        .notification {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid #667eea;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* ==================== MODAL ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+            border: 2px solid #667eea;
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr 2fr;
+            }
+
+            .right-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .navbar-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+
+        .friend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-online {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+        }
+
+        .status-offline {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <div class="logo">🎮 GAMEBOT</div>
+            <ul class="navbar-menu">
+                <li><a href="#" onclick="switchTab('dashboard')">Dashboard</a></li>
+                <li><a href="#" onclick="switchTab('games')">Play</a></li>
+                <li><a href="#" onclick="switchTab('ranked')">Ranked</a></li>
+                <li><a href="#" onclick="switchTab('friends')">Friends</a></li>
+            </ul>
+        </div>
+        <div class="navbar-right">
+            <div class="user-info">
+                <span id="username">Player</span>
+                <div class="rank-badge"><span id="rank-tier">Bronze</span> <span id="rank-rating">1000</span></div>
+                <div class="coins-display">💰 <span id="coins">100</span></div>
+            </div>
+            <button class="btn btn-secondary btn-small" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="main-content">
+            <!-- LEFT SIDEBAR -->
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">📊 YOUR STATS</div>
+                    <div class="stat-row">
+                        <span>Level:</span>
+                        <span id="level">1</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Win Rate:</span>
+                        <span id="win-rate">0%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Total Wins:</span>
+                        <span id="wins">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Playtime:</span>
+                        <span id="playtime">0h</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">🎮 QUICK PLAY</div>
+                    <div class="sidebar-item" onclick="quickPlay('rps')">Rock Paper Scissors</div>
+                    <div class="sidebar-item" onclick="quickPlay('bj')">Blackjack</div>
+                    <div class="sidebar-item" onclick="quickPlay('trivia')">Trivia</div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">🎯 DAILY QUEST</div>
+                    <div class="sidebar-item">🎮 Play 3 games</div>
+                    <div class="sidebar-item">🏆 Win 1 ranked</div>
+                    <div class="sidebar-item">👥 Add 1 friend</div>
+                </div>
+            </div>
+
+            <!-- MAIN SECTION -->
+            <div class="main-section">
+                <!-- DASHBOARD TAB -->
+                <div id="dashboard" class="tab-content active">
+                    <h2 class="section-title">🎮 Dashboard</h2>
+                    <div style="text-align: center; padding: 2rem;">
+                        <p>Welcome back, <span id="dash-username">Player</span>!</p>
+                        <p style="margin-top: 1rem; color: #bbb;">You are currently <span id="dash-tier" style="color: #667eea;">Bronze</span> rank</p>
+                        <p style="margin-top: 1rem; color: #bbb;">Rating: <span id="dash-rating">1000</span></p>
+                    </div>
+                </div>
+
+                <!-- GAMES TAB -->
+                <div id="games" class="tab-content">
+                    <h2 class="section-title">🎮 Choose a Game</h2>
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="switchGameMode('casual')">Casual</button>
+                        <button class="tab-btn" onclick="switchGameMode('ranked')">Ranked</button>
+                    </div>
+                    <div class="games-grid" id="games-grid">
+                        <!-- Games will be populated here -->
+                    </div>
+                </div>
+
+                <!-- RANKED TAB -->
+                <div id="ranked" class="tab-content">
+                    <h2 class="section-title">🏆 Ranked Leaderboard</h2>
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Rating</th>
+                                <th>Tier</th>
+                                <th>Wins</th>
+                                <th>Win Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body">
+                            <!-- Leaderboard data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- FRIENDS TAB -->
+                <div id="friends" class="tab-content">
+                    <h2 class="section-title">👥 Friends</h2>
+                    <button class="btn btn-primary" onclick="openModal('add-friend')">+ Add Friend</button>
+                    <div style="margin-top: 1.5rem;" id="friends-list">
+                        <!-- Friends will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDEBAR -->
+            <div class="right-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">🔔 NOTIFICATIONS</div>
+                    <div class="notification">🎮 Game starting in 30s</div>
+                    <div class="notification">🏆 You gained +25 rating!</div>
+                    <div class="notification">👥 Alice added you as friend</div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">👥 ONLINE FRIENDS</div>
+                    <div id="online-friends">
+                        <!-- Online friends will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <!-- Add Friend Modal -->
+    <div id="add-friend" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-close" onclick="closeModal('add-friend')">&times;</span>
+                Add Friend
+            </div>
+            <div class="form-group">
+                <label>Friend Username</label>
+                <input type="text" id="friend-username" placeholder="Enter username...">
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="addFriend()">Send Request</button>
+        </div>
+    </div>
+
+    <!-- Challenge Modal -->
+    <div id="challenge" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-close" onclick="closeModal('challenge')">&times;</span>
+                Challenge Player
+            </div>
+            <div class="form-group">
+                <label>Select Opponent</label>
+                <select id="opponent-select">
+                    <option>Choose opponent...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Stake Amount</label>
+                <input type="number" id="stake-amount" placeholder="0 coins (friendly)">
+            </div>
+            <div class="form-group">
+                <label>Game Type</label>
+                <select id="challenge-game-type">
+                    <option value="rps">Rock Paper Scissors</option>
+                    <option value="dice">Dice Roller</option>
+                    <option value="trivia">Trivia</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="challengePlayer()">Send Challenge</button>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let currentUser = null;
+        let allGames = [
+            { id: 'rps', name: 'Rock Paper Scissors', icon: '✂️', players: 2 },
+            { id: 'bj', name: 'Blackjack', icon: '🎰', players: '1+' },
+            { id: 'dice', name: 'Dice Roller', icon: '🎲', players: 2 },
+            { id: 'slots', name: 'Slot Machine', icon: '🎰', players: 1 },
+            { id: 'trivia', name: 'Trivia', icon: '🧠', players: '1+' },
+            { id: 'keno', name: 'Keno', icon: '🔢', players: 1 }
+        ];
+
+        const API_BASE_URL = window.location.protocol === 'file:' ? 'http://localhost:5000' : window.location.origin;
+        const API_URL = `${API_BASE_URL}/api/v3`;
+
+        // Initialize
+        window.addEventListener('load', () => {
+            checkAuth();
+            loadGames();
+            loadLeaderboard();
+        });
+
+        // Authentication
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            let user = {};
+            try {
+                user = JSON.parse(localStorage.getItem('user') || '{}');
+            } catch (_error) {
+                user = {};
+            }
+            
+            if (!token || !user.id) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            currentUser = user;
+            updateUI();
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        // UI Updates
+        function updateUI() {
+            const rating = currentUser.rank_rating || currentUser.rating || 1000;
+            const tier = currentUser.rank_tier || currentUser.tier || 'Bronze';
+            const wins = currentUser.total_wins || currentUser.wins || 0;
+
+            document.getElementById('username').textContent = currentUser.username;
+            document.getElementById('rank-tier').textContent = tier;
+            document.getElementById('rank-rating').textContent = rating;
+            document.getElementById('coins').textContent = currentUser.coins || 0;
+            
+            document.getElementById('level').textContent = currentUser.level || 1;
+            document.getElementById('win-rate').textContent = (currentUser.win_rate || 0) + '%';
+            document.getElementById('wins').textContent = wins;
+            
+            document.getElementById('dash-username').textContent = currentUser.username;
+            document.getElementById('dash-tier').textContent = tier;
+            document.getElementById('dash-rating').textContent = rating;
+        }
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function switchGameMode(mode) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (typeof event !== 'undefined' && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            // Load games (you could filter by mode here)
+            loadGames();
+        }
+
+        // Games
+        function loadGames() {
+            const grid = document.getElementById('games-grid');
+            grid.innerHTML = '';
+            
+            allGames.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.onclick = () => startGame(game.id);
+                card.innerHTML = `
+                    <div class="game-icon">${game.icon}</div>
+                    <div class="game-name">${game.name}</div>
+                    <div class="game-players">👥 ${game.players} players</div>
+                    <button class="btn btn-primary btn-small">Play</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function startGame(gameId) {
+            openModal('challenge');
+            document.getElementById('challenge-game-type').value = gameId;
+        }
+
+        function quickPlay(gameId) {
+            alert(`Starting ${gameId}...`);
+        }
+
+        // Leaderboard
+        function loadLeaderboard() {
+            // Mock data - replace with API call
+            const leaderboard = [
+                { rank: 1, username: 'ProGamer', rating: 2850, tier: 'Diamond', wins: 245, rate: '68.5%' },
+                { rank: 2, username: 'Shadow', rating: 2750, tier: 'Platinum', wins: 198, rate: '65.2%' },
+                { rank: 3, username: 'Phoenix', rating: 2680, tier: 'Platinum', wins: 176, rate: '62.1%' },
+                { rank: 4, username: 'Mystic', rating: 2550, tier: 'Gold', wins: 154, rate: '59.8%' },
+                { rank: 5, username: 'Knight', rating: 2420, tier: 'Gold', wins: 132, rate: '57.3%' }
+            ];
+
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+            
+            leaderboard.forEach(entry => {
+                const row = document.createElement('tr');
+                const rankClass = entry.rank === 1 ? 'rank-1' : entry.rank === 2 ? 'rank-2' : entry.rank === 3 ? 'rank-3' : '';
+                row.innerHTML = `
+                    <td class="${rankClass}">🥇 ${entry.rank}</td>
+                    <td class="player-badge">
+                        <div class="avatar"></div>
+                        ${entry.username}
+                    </td>
+                    <td>${entry.rating}</td>
+                    <td>${entry.tier}</td>
+                    <td>${entry.wins}</td>
+                    <td>${entry.rate}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Friends
+        function addFriend() {
+            const username = document.getElementById('friend-username').value;
+            alert(`Friend request sent to ${username}`);
+            closeModal('add-friend');
+        }
+
+        // Challenge
+        function challengePlayer() {
+            const opponent = document.getElementById('opponent-select').value;
+            const stake = document.getElementById('stake-amount').value;
+            const gameType = document.getElementById('challenge-game-type').value;
+            
+            alert(`Challenge sent! Game: ${gameType}, Stake: ${stake} coins`);
+            closeModal('challenge');
+        }
+
+        // Modals
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
