@@ -28,10 +28,10 @@ jobs:
       - name: Build Executable
         shell: pwsh
         run: |
-          # Build command using YOUR specific filename
+          # ONLY includes extensions confirmed to exist in your root folder
+          # Removed *.css and *.js because they caused the "Unable to find" error
           pyinstaller --onefile --windowed `
             --add-data "*.html;." `
-            --add-data "*.js;." `
             --add-data "*.bat;." `
             --add-data "*.ps1;." `
             gamebot_multiplayer_server.py
@@ -39,10 +39,11 @@ jobs:
       - name: DEBUG - Check Output
         shell: pwsh
         run: |
+          Write-Host "Contents of dist folder:"
           Get-ChildItem dist
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
         with:
-          files: dist/*.exe
+          files: dist/*.exe   
