@@ -1,13 +1,13 @@
-name: Build Windows EXE
+ name: Build Windows EXE
 
 on:
   push:
     tags:
-      - 'v*' # Triggers when you create a tag like v1.0
+      - 'v*'
 
 jobs:
   build:
-    runs-on: windows-latest # Runs on a Windows server
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -23,17 +23,25 @@ jobs:
 
       - name: Build Executable
         run: |
-          # Bundles all specific file types from the root folder
+          # Ensure main.py exists
+          dir *.py 
+          # Run PyInstaller
           pyinstaller --onefile --windowed `
             --add-data "*.html;." `
             --add-data "*.css;." `
             --add-data "*.js;." `
             --add-data "*.bat;." `
             --add-data "*.ps1;." `
-            main.py  # REPLACE with your main script name
+            main.py
+          
+          # DEBUG: List contents of dist folder to verify file name
+          dir dist
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: dist/GameBot.exe # REPLACE main.exe with your output name   
+          # Use a wildcard to be safe, or ensure the name matches exactly what 'dir dist' showed
+          files: dist/*.exe 
+          # If the upload fails because the release already exists, add:
+          # fail_on_unmatched_files: true    
