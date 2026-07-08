@@ -28,15 +28,22 @@ jobs:
       - name: Build Executable
         shell: pwsh
         run: |
+          # Changed target file to gamebot.py
           pyinstaller --onefile --windowed `
             --add-data "*.html;." `
             --add-data "*.bat;." `
             --add-data "*.ps1;." `
-            gamebot_multiplayer_server.py
+            gamebot.py
+
+      - name: DEBUG - Check Output
+        shell: pwsh
+        run: |
+          Write-Host "Contents of dist folder:"
+          Get-ChildItem dist
 
       - name: Upload Release Asset
-        uses: softprops/action-gh-release@v2 # Updated to v2 (Fixes Node 20 warning)
+        uses: softprops/action-gh-release@v2
         with:
           files: dist/*.exe
-          # Explicitly use v1.0 if running manually, otherwise use the pushed tag
+          # Attaches to v1.0 if running manually, or the specific tag if pushed
           tag_name: ${{ github.ref_name == 'main' && 'v1.0' || github.ref_name }}   
