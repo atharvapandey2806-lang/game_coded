@@ -28,22 +28,15 @@ jobs:
       - name: Build Executable
         shell: pwsh
         run: |
-          # ONLY includes extensions confirmed to exist in your root folder
-          # Removed *.css and *.js because they caused the "Unable to find" error
           pyinstaller --onefile --windowed `
             --add-data "*.html;." `
             --add-data "*.bat;." `
             --add-data "*.ps1;." `
             gamebot_multiplayer_server.py
 
-      - name: DEBUG - Check Output
-        shell: pwsh
-        run: |
-          Write-Host "Contents of dist folder:"
-          Get-ChildItem dist
-
       - name: Upload Release Asset
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2 # Updated to v2 (Fixes Node 20 warning)
         with:
-          files: dist/*.exe   
+          files: dist/*.exe
+          # Explicitly use v1.0 if running manually, otherwise use the pushed tag
+          tag_name: ${{ github.ref_name == 'main' && 'v1.0' || github.ref_name }}   
