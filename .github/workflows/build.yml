@@ -28,12 +28,12 @@ jobs:
       - name: Build Executable
         shell: pwsh
         run: |
-          # Changed target file to gamebot.py
+          # Targeting launcher.py as the entry point
           pyinstaller --onefile --windowed `
             --add-data "*.html;." `
             --add-data "*.bat;." `
             --add-data "*.ps1;." `
-            gamebot.py
+            launcher.py
 
       - name: DEBUG - Check Output
         shell: pwsh
@@ -45,5 +45,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.exe
-          # Attaches to v1.0 if running manually, or the specific tag if pushed
           tag_name: ${{ github.ref_name == 'main' && 'v1.0' || github.ref_name }}   
