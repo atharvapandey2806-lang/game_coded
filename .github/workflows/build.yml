@@ -20,25 +20,22 @@ jobs:
           python-version: '3.x'
 
       - name: Install Dependencies
-        shell: pwsh # Force PowerShell
+        shell: pwsh
         run: |
           pip install -r requirements.txt
           pip install pyinstaller
 
       - name: Build Executable
-        shell: pwsh # Force PowerShell
+        shell: pwsh
         run: |
-          # List files to verify
-          Get-ChildItem
-          
-          # Build command (No '^' needed here)
+          # Build command using YOUR specific filename
           pyinstaller --onefile --windowed `
             --add-data "*.html;." `
             --add-data "*.css;." `
             --add-data "*.js;." `
             --add-data "*.bat;." `
             --add-data "*.ps1;." `
-            main.py # <--- REPLACE with your actual main script name
+            gamebot_multiplayer_server.py
 
       - name: DEBUG - Check Output
         shell: pwsh
